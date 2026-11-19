@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CeramScan - Контроль качества и подлинности керамики</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header id="app-header" class="app-header">
+    <div class="header-inner">
+      <div class="brand-cluster">
+        <svg id="brand-logo-svg" class="brand-logo" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 10c0 5.5 3.1 9 7 9s7-3.5 7-9H5z"></path>
+          <path d="M7.5 10V7.5a4.5 4.5 0 0 1 9 0V10"></path>
+          <circle cx="12" cy="13.5" r="2.25" stroke="#1D4ED8"></circle>
+          <path d="M12 10.5v1M12 15.5v1M9.5 13.5h-1M15.5 13.5h-1" stroke="#1D4ED8"></path>
+        </svg>
+        <span class="brand-name">CeramScan</span>
+        <span class="stand-pill">Стенд v0.1</span>
+      </div>
+
+      <nav id="mode-tabs" class="mode-tabs" role="tablist" aria-label="Режимы работы" style="--tab-index: 0;">
+        <div id="mode-indicator" class="mode-indicator" aria-hidden="true"></div>
+        <button id="tab-inspect" class="mode-tab" type="button" role="tab" data-mode="inspect" aria-selected="true" aria-controls="panel-inspect">Пост ОТК</button>
+        <button id="tab-passport" class="mode-tab" type="button" role="tab" data-mode="passport" aria-selected="false" aria-controls="panel-passport">Подлинность</button>
+        <button id="tab-dashboard" class="mode-tab" type="button" role="tab" data-mode="dashboard" aria-selected="false" aria-controls="panel-dashboard">Дашборд</button>
+      </nav>
+
+      <div id="api-health-pill" class="health-pill" data-status="loading">
+        <span class="health-dot" aria-hidden="true"></span>
+        <span id="api-health-text">Проверка</span>
+      </div>
+    </div>
+  </header>
+
+  <div id="status-announcer" class="sr-only" aria-live="polite"></div>
+
+  <main class="workspace-main">
+    <section id="panel-inspect" class="workspace-panel is-active" role="tabpanel" aria-labelledby="tab-inspect">
+      <div class="split-5-7">
+        <aside class="control-sheet">
+          <div class="sheet-head">
+            <h1 class="panel-title">Пост ОТК</h1>
+            <p class="panel-subtitle">Оценка дефектов утиля и глазури по ГОСТ 28390-89</p>
+          </div>
+
+          <div class="control-block">
+            <span class="field-label">Этап обжига</span>
+            <div id="stage-toggle" class="segmented-two" role="radiogroup" aria-label="Этап обжига">
+              <button id="stage-bisque" class="seg-btn" type="button" role="radio" data-stage="bisque" aria-checked="true">Утиль 900°C</button>
+              <button id="stage-glazed" class="seg-btn" type="button" role="radio" data-stage="glazed" aria-checked="false">Глазурь 1350°C</button>
+            </div>
+          </div>
+
+          <div class="control-block">
+            <span class="field-label">Снимок изделия</span>
+            <div id="inspect-dropzone" class="dropzone" data-state="idle">
+              <svg class="icon-18 dropzone-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <div class="dropzone-copy">
+                <span id="inspect-file-name" class="dropzone-title">Перетащите кадр или выберите файл</span>
+                <span class="dropzone-hint">PNG, JPG, WEBP до 10 МБ</span>
+              </div>
+              <img id="inspect-preview-thumb" class="dropzone-thumb" alt="Предпросмотр кадра" hidden>
+              <label for="inspect-file-input" class="btn-secondary dropzone-pick">Выбрать фото</label>
+              <input id="inspect-file-input" class="sr-only-input" type="file" accept="image/*">
+            </div>
+
+            <button id="btn-camera-capture" class="btn-secondary btn-full" type="button">
+              <svg class="icon-18" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+              <span>Снять с камеры</span>
+            </button>
+            <input id="inspect-camera-input" class="sr-only-input" type="file" accept="image/*" capture="environment">
+          </div>
+
+          <div class="control-block">
+            <span class="field-label">Быстрый образец</span>
+            <div id="demo-sample-list" class="chip-grid" aria-label="Демонстрационные образцы"></div>
+          </div>
+
+          <div class="control-actions">
+            <button id="btn-run-inspect" class="btn-primary btn-full" type="button">Проверить изделие</button>
+            <p class="helper-note">Оценка по ГОСТ 28390-89</p>
+          </div>
+        </aside>
+
+        <div class="proof-stage">
+          <div id="inspect-result" class="result-shell" hidden>
+            <div class="stage-header">
+              <div class="verdict-cluster">
+                <span id="inspect-verdict-badge" class="verdict-badge"></span>
+                <span id="inspect-gost-summary" class="gost-summary"></span>
+              </div>
+              <span id="inspect-latency-ms" class="latency-readout mono-num">0.0 мс</span>
+            </div>
+
+            <div class="compare-toolbar">
+              <div id="compare-mode-group" class="segmented-three" role="group" aria-label="Режим просмотра">
+                <button type="button" class="view-btn" data-compare-mode="split" aria-pressed="true">
+                  <svg class="icon-18" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                    <line x1="12" y1="4" x2="12" y2="20"></line>
+                    <polyline points="8 9 5 12 8 15"></polyline>
+                    <polyline points="16 9 19 12 16 15"></polyline>
+                  </svg>
+                  <span>Сравнение</span>
+                </button>
+                <button type="button" class="view-btn" data-compare-mode="original" aria-pressed="false">Исходник</button>
+                <button type="button" class="view-btn" data-compare-mode="overlay" aria-pressed="false">Оверлей</button>
+              </div>
+            </div>
+
+            <div id="compare-viewport" class="compare-viewport" data-view="split" style="--wipe: 50%;">
+              <img id="img-overlay" class="compare-img compare-img-overlay" alt="Разметка дефектов CeramScan">
+              <img id="img-original" class="compare-img compare-img-original" alt="Исходный кадр керамики">
+              <div id="compare-divider" class="compare-divider" aria-hidden="true">
+                <div id="compare-handle" class="compare-handle" aria-hidden="true">
+                  <svg class="icon-18" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="9 7 4 12 9 17"></polyline>
+                    <polyline points="15 7 20 12 15 17"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <input id="compare-range" class="compare-range" type="range" min="0" max="100" value="50" aria-label="Шторка сравнения исходника и разметки">
+            </div>
+
+            <div class="defect-section">
+              <div class="section-subhead">
+                <span>Журнал дефектов</span>
+                <span id="inspect-defect-count" class="mono-num">0</span>
+              </div>
+              <ul id="inspect-defect-list" class="defect-list divide-y"></ul>
+            </div>
+          </div>
+
+          <div id="inspect-empty" class="state-box state-empty">
+            <svg class="icon-18 state-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+              <line x1="12" y1="4" x2="12" y2="20"></line>
+              <polyline points="8 9 5 12 8 15"></polyline>
+              <polyline points="16 9 19 12 16 15"></polyline>
+            </svg>
+            <h2 class="state-title">Загрузите снимок или выберите образец</h2>
+            <p class="state-desc">После проверки здесь откроется шторка сравнения «Исходник vs Оверлей» и список дефектов с допусками ГОСТ</p>
+          </div>
+
+          <div id="inspect-skeleton" class="state-box state-skeleton" hidden aria-busy="true">
+            <div class="skeleton-bar skeleton-title"></div>
+            <div class="skeleton-viewport"></div>
+            <div class="skeleton-bar"></div>
+            <div class="skeleton-bar skeleton-short"></div>
+          </div>
+
+          <div id="inspect-error" class="state-box state-error" role="alert" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="panel-passport" class="workspace-panel" role="tabpanel" aria-labelledby="tab-passport" hidden>
+      <div class="split-5-7">
+        <aside class="control-sheet">
+          <div class="sheet-head">
+            <h1 class="panel-title">Проверка подлинности</h1>
+            <p class="panel-subtitle">Цифровой паспорт кобальтовой росписи под 289-ФЗ для маркетплейсов</p>
+          </div>
+
+          <div id="passport-action-tabs" class="segmented-two" role="tablist" aria-label="Операция с паспортом">
+            <button type="button" class="seg-btn" role="tab" data-action="verify" aria-selected="true">
+              <svg class="icon-18" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <polyline points="9 12 11 14 15 10"></polyline>
+              </svg>
+              <span>Сверить узор</span>
+            </button>
+            <button type="button" class="seg-btn" role="tab" data-action="register" aria-selected="false">
+              <svg class="icon-18" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+                <rect x="14" y="14" width="3" height="3"></rect>
+                <path d="M21 14h-3v7h3M14 21h3"></path>
+              </svg>
+              <span>Выдать паспорт</span>
+            </button>
+          </div>
+
+          <form id="form-passport-verify" class="stack-form" novalidate>
+            <div class="field-group">
+              <label for="passport-id-input">Код паспорта</label>
+              <input id="passport-id-input" class="text-input mono-input" type="text" autocomplete="off" placeholder="GZHEL-2026-001">
+            </div>
+
+            <div class="field-group">
+              <span class="field-label">Быстрая сверка</span>
+              <div id="demo-passport-list" class="chip-grid" aria-label="Демонстрационные паспорта"></div>
+            </div>
+
+            <div class="field-group">
+              <label for="passport-file-input">Проверяемый кадр</label>
+              <input id="passport-file-input" class="file-input" type="file" accept="image/*">
+            </div>
+
+            <button id="btn-verify-passport" class="btn-primary btn-full" type="button">Сверить узор</button>
+          </form>
+
+          <form id="form-passport-register" class="stack-form" hidden novalidate>
+            <div class="field-group">
+              <label for="register-item-id">Код паспорта (опционально)</label>
+              <input id="register-item-id" class="text-input mono-input" type="text" autocomplete="off" placeholder="GZHEL-2026-002">
+            </div>
+
+            <div class="field-group">
+              <label for="register-sku">Артикул (SKU)</label>
+              <input id="register-sku" class="text-input" type="text" value="GZHEL-SKU-01">
+            </div>
+
+            <div class="field-group">
+              <label for="register-master-name">Мастер / участок</label>
+              <input id="register-master-name" class="text-input" type="text" value="Мастер Гжель">
+            </div>
+
+            <div class="field-group">
+              <label for="register-batch-note">Партия / заметка</label>
+              <input id="register-batch-note" class="text-input" type="text" placeholder="Обжиг 1350°C, смена S1">
+            </div>
+
+            <div class="field-group">
+              <label for="register-file-input">Эталонный снимок</label>
+              <input id="register-file-input" class="file-input" type="file" accept="image/*">
+            </div>
+
+            <button id="btn-register-passport" class="btn-primary btn-full" type="button">Создать паспорт</button>
+
+            <div id="register-result-card" class="qr-result-card" hidden>
+              <img id="register-qr-img" class="qr-preview" alt="QR-код паспорта изделия">
+              <div id="register-qr-meta" class="qr-meta"></div>
+            </div>
+          </form>
+        </aside>
+
+        <div class="proof-stage">
+          <div id="passport-result" class="result-shell" hidden>
+            <div id="passport-verdict-banner" class="verdict-banner">
+              <span id="passport-verdict-icon" class="verdict-icon-slot" aria-hidden="true"></span>
+              <div class="verdict-banner-copy">
+                <span id="passport-verdict-text" class="verdict-banner-title"></span>
+                <span id="passport-verdict-meta" class="verdict-banner-meta"></span>
+              </div>
+            </div>
+
+            <div id="passport-meter-wrap" class="meter-section">
+              <div class="meter-head">
+                <span class="field-label">Индекс сходства</span>
+                <span id="passport-score-value" class="score-hero mono-num">0.0%</span>
+              </div>
+              <div class="meter-track" aria-hidden="true">
+                <div id="passport-meter-fill" class="meter-fill" style="--score: 0;"></div>
+              </div>
+            </div>
+
+            <ul class="submetrics-list divide-y">
+              <li class="submetric-row">
+                <span class="submetric-name">Признаки ORB</span>
+                <div class="submetric-bar-track" aria-hidden="true">
+                  <div id="metric-orb-bar" class="submetric-bar-fill" style="--score: 0;"></div>
+                </div>
+                <span id="metric-orb-val" class="submetric-val mono-num">0%</span>
+              </li>
+              <li class="submetric-row">
+                <span class="submetric-name">Структура pHash</span>
+                <div class="submetric-bar-track" aria-hidden="true">
+                  <div id="metric-phash-bar" class="submetric-bar-fill" style="--score: 0;"></div>
+                </div>
+                <span id="metric-phash-val" class="submetric-val mono-num">0%</span>
+              </li>
+              <li class="submetric-row">
+                <span class="submetric-name">Палитра кобальта</span>
+                <div class="submetric-bar-track" aria-hidden="true">
+                  <div id="metric-cobalt-bar" class="submetric-bar-fill" style="--score: 0;"></div>
+                </div>
+                <span id="metric-cobalt-val" class="submetric-val mono-num">0%</span>
+              </li>
+            </ul>
+
+            <div class="dual-preview-grid">
+              <figure class="preview-figure">
+                <figcaption>Эталон паспорта</figcaption>
+                <div class="preview-frame">
+                  <img id="passport-ref-img" alt="Эталон паспорта">
+                </div>
+              </figure>
+              <figure class="preview-figure">
+                <figcaption>Проверяемый кадр</figcaption>
+                <div class="preview-frame">
+                  <img id="passport-probe-img" alt="Проверяемый кадр">
+                </div>
+              </figure>
+            </div>
+          </div>
+
+          <div id="passport-empty" class="state-box state-empty">
+            <svg class="icon-18 state-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <polyline points="9 12 11 14 15 10"></polyline>
+            </svg>
+            <h2 class="state-title">Выберите пару или введите код паспорта</h2>
+            <p class="state-desc">Система сравнит ключевые точки мазка, структуру узора и спектр кобальта с эталоном из реестра</p>
+          </div>
+
+          <div id="passport-skeleton" class="state-box state-skeleton" hidden aria-busy="true">
+            <div class="skeleton-bar skeleton-title"></div>
+            <div class="skeleton-bar"></div>
+            <div class="skeleton-dual">
+              <div class="skeleton-square"></div>
+              <div class="skeleton-square"></div>
+            </div>
+          </div>
+
+          <div id="passport-error" class="state-box state-error" role="alert" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="panel-dashboard" class="workspace-panel" role="tabpanel" aria-labelledby="tab-dashboard" hidden>
+      <div class="dashboard-topbar">
+        <div class="dashboard-title-row">
+          <h1 class="panel-title">Дашборд ОТК</h1>
+          <span id="dashboard-stand-badge" class="stand-pill">Синтетический стенд v0.1 / Журнал ОТК</span>
+        </div>
+        <button id="btn-refresh-analytics" class="btn-secondary" type="button">
+          <svg class="icon-18" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+          <span>Обновить</span>
+        </button>
+      </div>
+
+      <div id="dashboard-kpi-strip" class="kpi-strip">
+        <div class="kpi-cell">
+          <span class="kpi-label">Всего проверок</span>
+          <strong id="kpi-total" class="kpi-value mono-num">0</strong>
+        </div>
+        <div class="kpi-cell">
+          <span class="kpi-label">Годно (PASS)</span>
+          <strong id="kpi-pass-rate" class="kpi-value mono-num">0.0%</strong>
+        </div>
+        <div class="kpi-cell">
+          <span class="kpi-label">Доработка / Брак</span>
+          <strong id="kpi-defect-rate" class="kpi-value mono-num">0</strong>
+        </div>
+        <div class="kpi-cell">
+          <span class="kpi-label">Средний цикл, мс</span>
+          <strong id="kpi-avg-ms" class="kpi-value mono-num">0.0</strong>
+        </div>
+      </div>
+
+      <div class="split-4-8">
+        <aside id="dashboard-breakdown" class="breakdown-col"></aside>
+
+        <div id="dashboard-ledger-wrap" class="ledger-col">
+          <div class="filter-bar">
+            <div class="filter-field">
+              <label for="filter-stage">Этап</label>
+              <select id="filter-stage" class="select-input">
+                <option value="">Все этапы</option>
+                <option value="bisque">Утиль 900°C</option>
+                <option value="glazed">Глазурь 1350°C</option>
+              </select>
+            </div>
+            <div class="filter-field">
+              <label for="filter-verdict">Вердикт</label>
+              <select id="filter-verdict" class="select-input">
+                <option value="">Все вердикты</option>
+                <option value="PASS">PASS</option>
+                <option value="REWORK">REWORK</option>
+                <option value="REJECT">REJECT</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="dashboard-skeleton" class="state-box state-skeleton" hidden aria-busy="true">
+            <div class="skeleton-bar"></div>
+            <div class="skeleton-bar"></div>
+            <div class="skeleton-bar"></div>
+          </div>
+
+          <div id="dashboard-error" class="state-box state-error" role="alert" hidden></div>
+
+          <div id="dashboard-empty" class="state-box state-empty" hidden>
+            <svg class="icon-18 state-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            <h2 class="state-title">Записей пока нет</h2>
+            <p class="state-desc">Выполните проверку во вкладке «Пост ОТК», чтобы увидеть статистику смены и журнал брака</p>
+          </div>
+
+          <table id="ledger-table" class="ledger-table">
+            <thead>
+              <tr>
+                <th>Время</th>
+                <th>ID кадра</th>
+                <th>Этап</th>
+                <th>Дефекты</th>
+                <th>Цикл, мс</th>
+                <th>Вердикт</th>
+              </tr>
+            </thead>
+            <tbody id="ledger-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

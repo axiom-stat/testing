@@ -1,0 +1,241 @@
+{
+  "stand_label": "синтетический валидационный стенд v0.1",
+  "seed": 42,
+  "count": 26,
+  "samples": [
+    {
+      "id": "SYN-BISQUE-PASS-01",
+      "image_path": "images/SYN-BISQUE-PASS-01.png",
+      "stage": "bisque",
+      "defect_class": "pass",
+      "expected_verdict": "PASS",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-BISQUE-PASS-02",
+      "image_path": "images/SYN-BISQUE-PASS-02.png",
+      "stage": "bisque",
+      "defect_class": "pass",
+      "expected_verdict": "PASS",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-BISQUE-PASS-03",
+      "image_path": "images/SYN-BISQUE-PASS-03.png",
+      "stage": "bisque",
+      "defect_class": "pass",
+      "expected_verdict": "PASS",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-BISQUE-CRACK-01",
+      "image_path": "images/SYN-BISQUE-CRACK-01.png",
+      "stage": "bisque",
+      "defect_class": "crack",
+      "expected_verdict": "REJECT",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-BISQUE-CRACK-02",
+      "image_path": "images/SYN-BISQUE-CRACK-02.png",
+      "stage": "bisque",
+      "defect_class": "crack",
+      "expected_verdict": "REJECT",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-BISQUE-CRACK-03",
+      "image_path": "images/SYN-BISQUE-CRACK-03.png",
+      "stage": "bisque",
+      "defect_class": "crack",
+      "expected_verdict": "REJECT",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-BISQUE-CHIP-01",
+      "image_path": "images/SYN-BISQUE-CHIP-01.png",
+      "stage": "bisque",
+      "defect_class": "chip",
+      "expected_verdict": "REJECT",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-BISQUE-CHIP-02",
+      "image_path": "images/SYN-BISQUE-CHIP-02.png",
+      "stage": "bisque",
+      "defect_class": "chip",
+      "expected_verdict": "REJECT",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-BISQUE-WARP-01",
+      "image_path": "images/SYN-BISQUE-WARP-01.png",
+      "stage": "bisque",
+      "defect_class": "shape_warp",
+      "expected_verdict": "REJECT",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-BISQUE-WARP-02",
+      "image_path": "images/SYN-BISQUE-WARP-02.png",
+      "stage": "bisque",
+      "defect_class": "shape_warp",
+      "expected_verdict": "REJECT",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-GLAZED-PASS-01",
+      "image_path": "images/SYN-GLAZED-PASS-01.png",
+      "stage": "glazed",
+      "defect_class": "pass",
+      "expected_verdict": "PASS",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-GLAZED-PASS-02",
+      "image_path": "images/SYN-GLAZED-PASS-02.png",
+      "stage": "glazed",
+      "defect_class": "pass",
+      "expected_verdict": "PASS",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-GLAZED-PASS-03",
+      "image_path": "images/SYN-GLAZED-PASS-03.png",
+      "stage": "glazed",
+      "defect_class": "pass",
+      "expected_verdict": "PASS",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-GLAZED-PASS-04",
+      "image_path": "images/SYN-GLAZED-PASS-04.png",
+      "stage": "glazed",
+      "defect_class": "pass",
+      "expected_verdict": "PASS",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-GLAZED-CRACK-01",
+      "image_path": "images/SYN-GLAZED-CRACK-01.png",
+      "stage": "glazed",
+      "defect_class": "crack",
+      "expected_verdict": "REJECT",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-GLAZED-CRACK-02",
+      "image_path": "images/SYN-GLAZED-CRACK-02.png",
+      "stage": "glazed",
+      "defect_class": "crack",
+      "expected_verdict": "REJECT",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-GLAZED-CRACK-03",
+      "image_path": "images/SYN-GLAZED-CRACK-03.png",
+      "stage": "glazed",
+      "defect_class": "crack",
+      "expected_verdict": "REJECT",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-GLAZED-BARE-01",
+      "image_path": "images/SYN-GLAZED-BARE-01.png",
+      "stage": "glazed",
+      "defect_class": "glaze_bare",
+      "expected_verdict": "REWORK",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-GLAZED-BARE-02",
+      "image_path": "images/SYN-GLAZED-BARE-02.png",
+      "stage": "glazed",
+      "defect_class": "glaze_bare",
+      "expected_verdict": "REWORK",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-GLAZED-PINHOLE-01",
+      "image_path": "images/SYN-GLAZED-PINHOLE-01.png",
+      "stage": "glazed",
+      "defect_class": "pinhole_speck",
+      "expected_verdict": "REJECT",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-GLAZED-DRIP-01",
+      "image_path": "images/SYN-GLAZED-DRIP-01.png",
+      "stage": "glazed",
+      "defect_class": "glaze_drip",
+      "expected_verdict": "REWORK",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    },
+    {
+      "id": "SYN-FAKE-ALT-01",
+      "image_path": "images/SYN-FAKE-ALT-01.png",
+      "stage": "glazed",
+      "defect_class": "pass",
+      "expected_verdict": "PASS",
+      "auth_pair_id": "SYN-GLAZED-PASS-01",
+      "is_counterfeit": true
+    },
+    {
+      "id": "SYN-FAKE-HALFTONE-02",
+      "image_path": "images/SYN-FAKE-HALFTONE-02.png",
+      "stage": "glazed",
+      "defect_class": "pass",
+      "expected_verdict": "PASS",
+      "auth_pair_id": "SYN-GLAZED-PASS-02",
+      "is_counterfeit": true
+    },
+    {
+      "id": "SYN-FAKE-GRID-03",
+      "image_path": "images/SYN-FAKE-GRID-03.png",
+      "stage": "glazed",
+      "defect_class": "pass",
+      "expected_verdict": "PASS",
+      "auth_pair_id": "SYN-GLAZED-PASS-03",
+      "is_counterfeit": true
+    },
+    {
+      "id": "SYN-FAKE-GREEN-04",
+      "image_path": "images/SYN-FAKE-GREEN-04.png",
+      "stage": "glazed",
+      "defect_class": "pass",
+      "expected_verdict": "PASS",
+      "auth_pair_id": "SYN-GLAZED-PASS-04",
+      "is_counterfeit": true
+    },
+    {
+      "id": "SYN-BISQUE-PASS-04",
+      "image_path": "images/SYN-BISQUE-PASS-04.png",
+      "stage": "bisque",
+      "defect_class": "pass",
+      "expected_verdict": "PASS",
+      "auth_pair_id": null,
+      "is_counterfeit": false
+    }
+  ]
+}

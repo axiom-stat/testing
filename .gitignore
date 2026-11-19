@@ -1,0 +1,35 @@
+# Python environments & bytecode
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# OS & agent metadata
+.DS_Store
+.agents/
+
+# Databases & logs
+*.db
+*.db-wal
+*.db-shm
+*.db*
+*.sqlite*
+logs/
+*.log
+
+# Temporary images, PDFs & runtime generated outputs
+tmp_*.png
+tmp_*.pdf
+*.tmp
+reports/overlays/runtime/
+reports/passports/
+reports/qr/
+
+# Real factory photos stay local; keep folder structure via .gitkeep
+data/real_photos/**
+!data/real_photos/
+!data/real_photos/.gitkeep
+!data/real_photos/*/
+!data/real_photos/**/.gitkeep

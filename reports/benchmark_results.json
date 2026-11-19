@@ -1,0 +1,90 @@
+{
+  "generated_at": "2026-11-19T14:33:12.290747+00:00",
+  "dataset_label": "синтетический валидационный стенд v0.1",
+  "model_mode": "deterministic",
+  "sample_count": 26,
+  "avg_latency_ms": 80.49,
+  "p95_latency_ms": 137.06,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1": 1.0,
+  "verdict_accuracy": 1.0,
+  "per_class": {
+    "chip": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 2
+    },
+    "crack": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6
+    },
+    "glaze_bare": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 2
+    },
+    "glaze_drip": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 1
+    },
+    "pass": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 12
+    },
+    "pinhole_speck": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 1
+    },
+    "shape_warp": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 2
+    }
+  },
+  "auth_benchmark": {
+    "pair_count": 4,
+    "auth_accuracy": 1.0,
+    "genuine_mean_match": 86.87,
+    "fake_mean_match": 38.39
+  },
+  "overlay_files": [
+    "reports/overlays/SYN-BISQUE-PASS-01.png",
+    "reports/overlays/SYN-BISQUE-PASS-02.png",
+    "reports/overlays/SYN-BISQUE-PASS-03.png",
+    "reports/overlays/SYN-BISQUE-CRACK-01.png",
+    "reports/overlays/SYN-BISQUE-CRACK-02.png",
+    "reports/overlays/SYN-BISQUE-CRACK-03.png",
+    "reports/overlays/SYN-BISQUE-CHIP-01.png",
+    "reports/overlays/SYN-BISQUE-CHIP-02.png",
+    "reports/overlays/SYN-BISQUE-WARP-01.png",
+    "reports/overlays/SYN-BISQUE-WARP-02.png",
+    "reports/overlays/SYN-GLAZED-PASS-01.png",
+    "reports/overlays/SYN-GLAZED-PASS-02.png",
+    "reports/overlays/SYN-GLAZED-PASS-03.png",
+    "reports/overlays/SYN-GLAZED-PASS-04.png",
+    "reports/overlays/SYN-GLAZED-CRACK-01.png",
+    "reports/overlays/SYN-GLAZED-CRACK-02.png",
+    "reports/overlays/SYN-GLAZED-CRACK-03.png",
+    "reports/overlays/SYN-GLAZED-BARE-01.png",
+    "reports/overlays/SYN-GLAZED-BARE-02.png",
+    "reports/overlays/SYN-GLAZED-PINHOLE-01.png",
+    "reports/overlays/SYN-GLAZED-DRIP-01.png",
+    "reports/overlays/SYN-FAKE-ALT-01.png",
+    "reports/overlays/SYN-FAKE-HALFTONE-02.png",
+    "reports/overlays/SYN-FAKE-GRID-03.png",
+    "reports/overlays/SYN-FAKE-GREEN-04.png",
+    "reports/overlays/SYN-BISQUE-PASS-04.png"
+  ]
+}
